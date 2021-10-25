@@ -1,9 +1,9 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:weather_repository/weather_repository.dart' hide Weather;
 import 'package:weather_repository/weather_repository.dart'
     as weather_repository;
 
+part 'weather.freezed.dart';
 part 'weather.g.dart';
 
 enum TemperatureUnits { fahrenheit, celsius }
@@ -14,28 +14,24 @@ extension TemperatureUnitsX on TemperatureUnits {
   bool get isCelsius => this == TemperatureUnits.celsius;
 }
 
-@JsonSerializable()
-class Temperature extends Equatable {
-  const Temperature({required this.value});
+@freezed
+class Temperature with _$Temperature {
+  const factory Temperature({required double value}) = _Temperature;
 
   factory Temperature.fromJson(Map<String, dynamic> json) =>
       _$TemperatureFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TemperatureToJson(this);
-
-  final double value;
-
-  @override
-  List<Object?> get props => [value];
 }
 
-@JsonSerializable()
-class Weather extends Equatable {
-  Weather(
-      {required this.condition,
-      required this.lastUpdated,
-      required this.location,
-      required this.temperature});
+@freezed
+class Weather with _$Weather {
+  const Weather._();
+
+  const factory Weather({
+    required WeatherCondition condition,
+    required DateTime lastUpdated,
+    required String location,
+    required Temperature temperature,
+  }) = _Weather;
 
   factory Weather.fromJson(Map<String, dynamic> json) =>
       _$WeatherFromJson(json);
@@ -55,33 +51,4 @@ class Weather extends Equatable {
     location: '--',
     temperature: const Temperature(value: 0),
   );
-
-  final WeatherCondition condition;
-  final DateTime lastUpdated;
-  final String location;
-  final Temperature temperature;
-
-  @override
-  List<Object?> get props => [
-        condition,
-        lastUpdated,
-        location,
-        temperature,
-      ];
-
-  Map<String, dynamic> toJson() => _$WeatherToJson(this);
-
-  Weather copyWith({
-    WeatherCondition? condition,
-    DateTime? lastUpdated,
-    String? location,
-    Temperature? temperature,
-  }) {
-    return Weather(
-      condition: condition ?? this.condition,
-      lastUpdated: lastUpdated ?? this.lastUpdated,
-      location: location ?? this.location,
-      temperature: temperature ?? this.temperature,
-    );
-  }
 }
