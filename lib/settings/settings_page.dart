@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_bloc/weather/bloc/weather_bloc.dart';
 import 'package:weather_bloc/weather/weather.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
-  static Route route(WeatherCubit weatherCubit) {
+  static Route route(WeatherBloc weatherBloc) {
     return MaterialPageRoute(
       builder: (_) => BlocProvider.value(
-        value: weatherCubit,
+        value: weatherBloc,
         child: SettingsPage(),
       ),
     );
@@ -20,7 +21,7 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
-          BlocBuilder<WeatherCubit, WeatherState>(
+          BlocBuilder<WeatherBloc, WeatherState>(
             buildWhen: (previous, current) =>
                 previous.temperatureUnits != current.temperatureUnits,
             builder: (BuildContext context, state) {
@@ -31,7 +32,8 @@ class SettingsPage extends StatelessWidget {
                     const Text('Use metric measurements for temperature units'),
                 trailing: Switch(
                   value: state.temperatureUnits.isCelsius,
-                  onChanged: (_) => context.read<WeatherCubit>().toggleUnits(),
+                  onChanged: (_) =>
+                      context.read<WeatherBloc>().add(WeatherToggleUnits()),
                 ),
               );
             },

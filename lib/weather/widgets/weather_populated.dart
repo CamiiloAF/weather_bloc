@@ -14,7 +14,7 @@ class WeatherPopulated extends StatelessWidget {
 
   final Weather weather;
   final TemperatureUnits units;
-  final ValueGetter<Future<void>> onRefresh;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class WeatherPopulated extends StatelessWidget {
       children: [
         _WeatherBackground(),
         RefreshIndicator(
-            onRefresh: onRefresh,
+            onRefresh: () async => onRefresh(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               clipBehavior: Clip.none,
